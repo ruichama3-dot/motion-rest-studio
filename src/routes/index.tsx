@@ -1,24 +1,56 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Film, Mic, Wand2 } from "lucide-react";
+import { Logo } from "@/components/Logo";
+import { Button } from "@/components/ui/button";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Motion Rest — Vídeos motion graphics com IA" },
+      { name: "description", content: "Transforme uma descrição num vídeo animado, narrado e pronto a exportar." },
+      { property: "og:title", content: "Motion Rest — Vídeos motion graphics com IA" },
+      { property: "og:description", content: "Transforme uma descrição num vídeo animado, narrado e pronto a exportar." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: Landing,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Landing() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
+        <Logo />
+        <Button asChild variant="ghost"><Link to="/auth">Entrar</Link></Button>
+      </header>
+      <main className="mx-auto max-w-6xl px-5 pb-24 pt-16 md:pt-28">
+        <p className="fade-up mb-5 inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+          <span className="size-1.5 rounded-full bg-primary" /> Estúdio de motion graphics
+        </p>
+        <h1 className="fade-up max-w-3xl text-5xl font-bold leading-[1.02] md:text-7xl">
+          Escreva a ideia.<br /><span className="text-primary">Receba o vídeo.</span>
+        </h1>
+        <p className="fade-up mt-6 max-w-xl text-lg text-muted-foreground">
+          Storyboards, animações cinematográficas e narração — num só lugar, em 9:16, 16:9 ou 1:1.
+        </p>
+        <div className="fade-up mt-10 flex flex-wrap gap-3">
+          <Button asChild size="lg"><Link to="/app">Criar um vídeo <ArrowRight /></Link></Button>
+        </div>
+        <div className="mt-24 grid gap-4 md:grid-cols-3">
+          {[
+            { i: Wand2, t: "Storyboard por cenas", d: "Cada cena com texto, cor, ritmo e transição editáveis." },
+            { i: Film, t: "Animação a sério", d: "Springs, máscaras, kinetic typography e movimentos de câmara." },
+            { i: Mic, t: "Narração natural", d: "Vozes por IA sincronizadas com as cenas." },
+          ].map(({ i: I, t, d }) => (
+            <div key={t} className="glass rounded-2xl p-6">
+              <I className="size-5 text-primary" />
+              <h3 className="mt-4 font-semibold">{t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{d}</p>
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
