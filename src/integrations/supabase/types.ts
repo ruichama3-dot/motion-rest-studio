@@ -14,7 +14,133 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      generations: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          input: Json
+          kind: string
+          output: Json | null
+          project_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          input?: Json
+          kind: string
+          output?: Json | null
+          project_id: string
+          status?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          input?: Json
+          kind?: string
+          output?: Json | null
+          project_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          brief: Json
+          created_at: string
+          duration_seconds: number
+          format: string
+          id: string
+          name: string
+          status: string
+          storyboard: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brief?: Json
+          created_at?: string
+          duration_seconds?: number
+          format?: string
+          id?: string
+          name?: string
+          status?: string
+          storyboard?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          brief?: Json
+          created_at?: string
+          duration_seconds?: number
+          format?: string
+          id?: string
+          name?: string
+          status?: string
+          storyboard?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      render_jobs: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          output_path: string | null
+          progress: number
+          project_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          output_path?: string | null
+          progress?: number
+          project_id: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          output_path?: string | null
+          progress?: number
+          project_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "render_jobs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

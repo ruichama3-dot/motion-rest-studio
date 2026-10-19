@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1792390964914,
+      "tag": "0000_motion_rest_foundation",
+      "breakpoints": true
+    }
+  ]
 }
