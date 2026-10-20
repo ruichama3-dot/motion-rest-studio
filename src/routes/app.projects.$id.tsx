@@ -75,7 +75,7 @@ function Editor() {
     setSel(j);
   };
   const add = () => {
-    if (sb.scenes.length >= MAX_SCENES) return toast.error(`Máximo de ${MAX_SCENES} cenas`);
+    if (sb.scenes.length >= MAX_SCENES) { toast.error(`Máximo de ${MAX_SCENES} cenas`); return; }
     commit({ ...sb, scenes: [...sb.scenes, { ...scene, id: newSceneId(), headline: "Nova cena", subline: "" }] });
     setSel(sb.scenes.length);
   };
