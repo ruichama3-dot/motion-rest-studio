@@ -57,20 +57,20 @@ function Editor() {
     setHist((h) => ({ past: [...h.past.slice(-49), h.present!], present: next, future: [] }));
     setDirty(true);
   }, []);
-  const undo = () => setHist((h) => (h.past.length ? { past: h.past.slice(0, -1), present: h.past.at(-1)!, future: [h.present!, ...h.future] } : h));
-  const redo = () => setHist((h) => (h.future.length ? { past: [...h.past, h.present!], present: h.future[0], future: h.future.slice(1) } : h));
+  const undo = () => setHist((h) => (h.past.length ? { past: h.past.slice(0, -1), present: h.past[h.past.length - 1]!, future: [h.present!, ...h.future] } : h));
+  const redo = () => setHist((h) => (h.future.length ? { past: [...h.past, h.present!], present: h.future[0]!, future: h.future.slice(1) } : h));
 
   if (error) return <p className="p-10 text-destructive">Projeto não encontrado: {error.message}</p>;
   if (!sb) return <div className="p-10 text-muted-foreground">A carregar projeto…</div>;
 
-  const scene = sb.scenes[Math.min(sel, sb.scenes.length - 1)];
+  const scene = sb.scenes[Math.min(sel, sb.scenes.length - 1)]!;
   const valid = parseStoryboard(sb);
   const patch = (p: Partial<Scene>) => commit({ ...sb, scenes: sb.scenes.map((s) => (s.id === scene.id ? { ...s, ...p } : s)) });
   const move = (dir: -1 | 1) => {
     const i = sb.scenes.indexOf(scene), j = i + dir;
     if (j < 0 || j >= sb.scenes.length) return;
     const scenes = [...sb.scenes];
-    [scenes[i], scenes[j]] = [scenes[j], scenes[i]];
+    [scenes[i], scenes[j]] = [scenes[j]!, scenes[i]!];
     commit({ ...sb, scenes });
     setSel(j);
   };
@@ -170,10 +170,10 @@ function Editor() {
             </select>
           </Field>
           <Field label={`Duração · ${(scene.durationInFrames / FPS).toFixed(1)}s`}>
-            <Slider min={MIN_SCENE_SECONDS * FPS} max={MAX_SCENE_SECONDS * FPS} step={5} value={[scene.durationInFrames]} onValueChange={([v]) => patch({ durationInFrames: v })} />
+            <Slider min={MIN_SCENE_SECONDS * FPS} max={MAX_SCENE_SECONDS * FPS} step={5} value={[scene.durationInFrames]} onValueChange={([v]) => patch({ durationInFrames: v! })} />
           </Field>
           <Field label={`Velocidade da animação · ${scene.speed.toFixed(1)}x`}>
-            <Slider min={0.5} max={2} step={0.1} value={[scene.speed]} onValueChange={([v]) => patch({ speed: v })} />
+            <Slider min={0.5} max={2} step={0.1} value={[scene.speed]} onValueChange={([v]) => patch({ speed: v! })} />
           </Field>
           <div className="grid grid-cols-3 gap-3">
             {(["background", "foreground", "accent"] as const).map((k) => (
