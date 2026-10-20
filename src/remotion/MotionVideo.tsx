@@ -40,7 +40,7 @@ function KineticTitle({ scene }: { scene: Scene }) {
       <div style={{ width: `${bar * 12}%`, height: size * 0.12, background: scene.accent, marginBottom: size * 0.4, borderRadius: 99 }} />
       <h1 style={{ margin: 0, fontSize: size, lineHeight: 1.05, fontWeight: 700, color: scene.foreground, letterSpacing: "-0.03em" }}>
         {words.map((w, i) => (
-          <Word key={i} delay={i * 4} speed={scene.speed}>{w} </Word>
+          <Word key={i} delay={i * 4} speed={scene.speed}>{w}</Word>
         ))}
       </h1>
       <p style={{ marginTop: size * 0.35, fontSize: size * 0.32, color: scene.foreground, opacity: sub * 0.7, transform: `translateY(${(1 - sub) * 20}px)` }}>
@@ -53,7 +53,7 @@ function KineticTitle({ scene }: { scene: Scene }) {
 function Word({ delay, speed, children }: { delay: number; speed: number; children: React.ReactNode }) {
   const p = useEnter(delay, speed);
   return (
-    <span style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom" }}>
+    <span style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom", marginRight: "0.25em" }}>
       <span style={{ display: "inline-block", transform: `translateY(${(1 - p) * 110}%)` }}>{children}</span>
     </span>
   );
