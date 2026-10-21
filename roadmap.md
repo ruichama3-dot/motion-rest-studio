@@ -1,7 +1,9 @@
 # Motion Rest roadmap
-- [x] Fase 1 — Fundação: design, contas, projetos, editor de cenas, pré-visualização
-- [ ] Fase 2 — Geração por IA: briefing → storyboard (Gemini via Lovable AI)
-- [ ] Fase 3 — Narração: Gemini TTS, sincronização, legendas
-- [ ] Fase 4 — Editor: faixas de áudio, assistente de criação em etapas
-- [ ] Fase 5 — Exportação MP4 (bloqueado: precisa de serviço de render externo, ex. Remotion Lambda/AWS)
-- [ ] Fase 6 — Qualidade, limites de uso, vídeo demo
+- [ ] Fase A (atual) — Auditar, testar criação/refresh, corrigir falhas e recuperação sem substituir funcionalidades
+- [ ] Fase B (próxima) — Assistente de criação com formulários por categoria e respostas guardadas
+- [ ] Fase C — Biblioteca de materiais persistente, uploads e permissões
+- [ ] Fase D — Conceito criativo editável e storyboard validado por IA
+- [ ] Fase E — Expandir templates e animações Remotion existentes
+- [ ] Fase F — Narração real e sincronização de áudio
+- [ ] Fase G — Renderização, histórico e download (depende de serviço externo)
+- [ ] Fase H — Qualidade ponta-a-ponta e vídeo real de teste
