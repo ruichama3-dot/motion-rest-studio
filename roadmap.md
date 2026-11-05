@@ -1,4 +1,5 @@
 # Motion Rest roadmap
+- Pedido atual: implementar todas as fases do PDF, preservando o existente e validando cada fase; dependências externas ficam explícitas.
 - [ ] Fase A (atual) — Auditar, testar criação/refresh, corrigir falhas e recuperação sem substituir funcionalidades
 - [ ] Fase B (próxima) — Assistente de criação com formulários por categoria e respostas guardadas
 - [ ] Fase C — Biblioteca de materiais persistente, uploads e permissões

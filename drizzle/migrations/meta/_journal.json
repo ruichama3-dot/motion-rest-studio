@@ -8,6 +8,13 @@
       "when": 1792390964914,
       "tag": "0000_motion_rest_foundation",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793870456058,
+      "tag": "0001_project_assets",
+      "breakpoints": true
     }
   ]
 }
