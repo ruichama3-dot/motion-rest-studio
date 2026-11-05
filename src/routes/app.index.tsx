@@ -54,7 +54,7 @@ function Dashboard() {
           <div className="flex size-14 items-center justify-center rounded-2xl bg-accent"><Film className="size-6 text-primary" /></div>
           <h2 className="mt-5 text-xl font-semibold">Ainda não há projetos</h2>
           <p className="mt-1 max-w-sm text-muted-foreground">Crie o primeiro vídeo e edite cada cena ao seu gosto.</p>
-          <Button className="mt-6" onClick={() => create.mutate()}><Plus /> Criar novo vídeo</Button>
+          <Button className="mt-6" disabled={create.isPending} onClick={() => create.mutate()}><Plus /> Criar novo vídeo</Button>
         </div>
       )}
 

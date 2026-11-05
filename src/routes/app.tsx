@@ -17,6 +17,7 @@ function AppLayout() {
   const { user, loading } = useAuth();
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
@@ -25,19 +26,23 @@ function AppLayout() {
   if (loading || !user) return <div className="flex min-h-screen items-center justify-center text-muted-foreground">A carregar…</div>;
 
   async function newVideo() {
+    if (creating) return;
+    setCreating(true);
     try {
       const id = await createProject("Novo vídeo");
       setOpen(false);
       nav({ to: "/app/projects/$id", params: { id } });
     } catch (e) {
       toast.error((e as Error).message);
+    } finally {
+      setCreating(false);
     }
   }
 
   const sidebar = (
     <nav className="flex h-full flex-col gap-1 p-4">
       <div className="mb-6 px-2 pt-1"><Logo /></div>
-      <Button onClick={newVideo} className="mb-4 justify-start"><Plus /> Criar novo vídeo</Button>
+      <Button onClick={newVideo} disabled={creating} className="mb-4 justify-start"><Plus /> Criar novo vídeo</Button>
       <Link to="/app" activeOptions={{ exact: true }} onClick={() => setOpen(false)}
         className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary data-[status=active]:bg-sidebar-accent data-[status=active]:text-sidebar-accent-foreground">
         <LayoutGrid className="size-4" /> Projetos
