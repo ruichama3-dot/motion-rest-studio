@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import type { ProductionBrief } from "./production";
 import { parseStoryboard, starterStoryboard, totalFrames, FPS, type Storyboard, type VideoFormat } from "./storyboard";
 
 export type Project = {
@@ -8,12 +9,13 @@ export type Project = {
   format: string;
   status: string;
   storyboard: Storyboard;
+  brief: ProductionBrief;
   duration_seconds: number;
   created_at: string;
   updated_at: string;
 };
 
-const cols = "id,name,format,status,storyboard,duration_seconds,created_at,updated_at";
+const cols = "id,name,format,status,storyboard,brief,duration_seconds,created_at,updated_at";
 
 export async function listProjects(): Promise<Project[]> {
   const { data, error } = await supabase.from("projects").select(cols).order("updated_at", { ascending: false });
@@ -69,5 +71,10 @@ export async function duplicateProject(p: Project) {
 
 export async function deleteProject(id: string) {
   const { error } = await supabase.from("projects").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function saveBrief(id: string, brief: ProductionBrief) {
+  const { error } = await supabase.from("projects").update({ brief: brief as never, name: brief.fields.name || "Novo vídeo" }).eq("id", id);
   if (error) throw error;
 }

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** Approved scene templates. The AI may only pick from this list — no free code. */
-export const SCENE_TEMPLATES = ["kinetic-title", "split-reveal", "stat", "logo-reveal"] as const;
+export const SCENE_TEMPLATES = ["kinetic-title", "split-reveal", "stat", "logo-reveal", "media-showcase"] as const;
 export const TRANSITIONS = ["fade", "slide", "zoom", "wipe"] as const;
 export const FORMATS = {
   "16:9": { width: 1920, height: 1080 },
@@ -32,12 +32,21 @@ export const sceneSchema = z.object({
   foreground: hex,
   accent: hex,
   speed: z.number().min(0.5).max(2).default(1),
+  narration: z.string().max(1500).optional(),
+  visual: z.string().max(1000).optional(),
+  mediaPath: z.string().max(500).optional(),
+  mediaType: z.enum(["image", "video"]).optional(),
+  audioPath: z.string().max(500).optional(),
+  audioVolume: z.number().min(0).max(1).optional(),
+  captions: z.boolean().optional(),
 });
 
 export const storyboardSchema = z
   .object({
     format: z.enum(["16:9", "9:16", "1:1"]),
     scenes: z.array(sceneSchema).min(1).max(MAX_SCENES),
+    musicPath: z.string().max(500).optional(),
+    musicVolume: z.number().min(0).max(1).optional(),
   })
   .refine((s) => totalFrames(s.scenes) <= MAX_TOTAL_SECONDS * FPS, {
     message: `Duração total acima de ${MAX_TOTAL_SECONDS}s`,
@@ -64,7 +73,7 @@ export function starterStoryboard(format: VideoFormat = "16:9"): Storyboard {
     format,
     scenes: [
       { id: newSceneId(), template: "kinetic-title", durationInFrames: 90, headline: "O seu produto em movimento", subline: "Escreva o briefing e edite cada cena", transition: "fade", ...base },
-      { id: newSceneId(), template: "stat", durationInFrames: 75, headline: "3x", subline: "mais atenção com vídeo", transition: "slide", ...base, background: "#171717", foreground: "#FFFFFF" },
+      { id: newSceneId(), template: "stat", durationInFrames: 75, headline: "A sua marca", subline: "A sua mensagem", transition: "slide", ...base, background: "#171717", foreground: "#FFFFFF" },
       { id: newSceneId(), template: "logo-reveal", durationInFrames: 75, headline: "MOTION REST", subline: "Comece hoje", transition: "zoom", ...base },
     ],
   };
