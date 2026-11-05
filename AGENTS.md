@@ -14,3 +14,4 @@
 - Remotion Player is loaded only on the client (lazy import, `/app` routes have `ssr: false`) — it is browser-only.
 - Project data is read/written from the browser with the Cloud client under per-user RLS; privileged work (AI, TTS, render jobs) goes through authenticated server functions — keys never reach the browser.
 - MP4 rendering cannot run on the app's edge server (no Chromium/FFmpeg); it must run on an external Remotion-compatible renderer.
+- Project access validates IDs and distinguishes unavailable resources from transient fetch errors; keep recovery inside the existing editor route to preserve URLs.
