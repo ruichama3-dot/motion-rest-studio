@@ -80,24 +80,61 @@ export async function generateStoryboardWithGemini(input: RequestData): Promise<
     "Responde com o objeto JSON { scenes: [...] } e não incluas duração nem propriedades adicionais.",
   ].join("\n");
 
-  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemInstruction }] },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: { responseMimeType: "application/json", maxOutputTokens: 4500 },
-    }),
-    signal: AbortSignal.timeout(45000),
+  // Se o modelo principal estiver temporariamente sobrecarregado, tenta modelos Flash alternativos.
+  // Cada tentativa tem timeout curto para respeitar o limite da função serverless.
+  const models = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-2.5-flash"];
+  const requestBody = JSON.stringify({
+    systemInstruction: { parts: [{ text: systemInstruction }] },
+    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+    generationConfig: { responseMimeType: "application/json", maxOutputTokens: 4500 },
   });
 
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    console.error("[Motion Rest] Gemini request failed:", response.status, detail.slice(0, 500));
-    if (response.status === 429) throw new Error("A Gemini API atingiu o limite de utilização. Aguarde e tente novamente.");
-    if (response.status === 401 || response.status === 403) throw new Error("A chave Gemini foi recusada. Verifique a chave configurada no Vercel.");
-    throw new Error("Não foi possível gerar o vídeo agora. Tente novamente dentro de instantes.");
+  let response: Response | null = null;
+  let lastFailure = "";
+  let selectedModel = "";
+
+  for (const model of models) {
+    try {
+      const candidate = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body: requestBody,
+        signal: AbortSignal.timeout(15000),
+      });
+
+      if (candidate.ok) {
+        response = candidate;
+        selectedModel = model;
+        break;
+      }
+
+      const detail = await candidate.text().catch(() => "");
+      lastFailure = detail;
+      console.error(`[Motion Rest] Gemini ${model} failed:`, candidate.status, detail.slice(0, 350));
+
+      // Não repetir erros de chave, quota ou pedido inválido: trocar de modelo não os resolve.
+      if (![500, 502, 503, 504].includes(candidate.status)) {
+        response = candidate;
+        break;
+      }
+    } catch (error) {
+      lastFailure = error instanceof Error ? error.message : String(error);
+      console.error(`[Motion Rest] Gemini ${model} request error:`, lastFailure);
+    }
   }
+
+  if (!response || !response.ok) {
+    const status = response?.status;
+    console.error("[Motion Rest] All Gemini model attempts failed:", status ?? "timeout", lastFailure.slice(0, 500));
+    if (status === 429) throw new Error("A Gemini API atingiu o limite de utilização. Aguarde e tente novamente.");
+    if (status === 401 || status === 403) throw new Error("A chave Gemini foi recusada. Verifique a chave configurada no Vercel.");
+    if (!status || [500, 502, 503, 504].includes(status)) {
+      throw new Error("Os servidores de IA estão temporariamente ocupados. Tente novamente em alguns instantes.");
+    }
+    throw new Error("Não foi possível gerar o vídeo. Verifique a descrição e tente novamente.");
+  }
+
+  console.info("[Motion Rest] Storyboard generated with", selectedModel);
 
   const payload = await response.json() as {
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
