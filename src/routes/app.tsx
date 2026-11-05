@@ -4,7 +4,6 @@ import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/app")({
-  ssr: false,
   component: AppLayout,
 });
 
