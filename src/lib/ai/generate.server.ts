@@ -86,7 +86,7 @@ export async function generateStoryboardWithGemini(input: RequestData): Promise<
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemInstruction }] },
       contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: { responseMimeType: "application/json", temperature: 0.7, maxOutputTokens: 4500 },
+      generationConfig: { responseMimeType: "application/json", maxOutputTokens: 4500 },
     }),
     signal: AbortSignal.timeout(45000),
   });

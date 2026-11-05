@@ -81,7 +81,7 @@ function VideoStudio() {
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <label className="space-y-2 text-sm font-medium">
             Formato do vídeo
-            <select value={format} onChange={(event) => setFormat(event.target.value as VideoFormat)} disabled={busy} className="h-11 w-full rounded-xl border bg-background px-3">
+            <select value={format} onChange={(event) => { setFormat(event.target.value as VideoFormat); setStoryboard(null); }} disabled={busy} className="h-11 w-full rounded-xl border bg-background px-3">
               <option value="9:16">Vertical · 9:16 (Reels / TikTok)</option>
               <option value="16:9">Horizontal · 16:9 (YouTube)</option>
               <option value="1:1">Quadrado · 1:1 (Feed)</option>
@@ -89,7 +89,7 @@ function VideoStudio() {
           </label>
           <label className="space-y-2 text-sm font-medium">
             Duração pretendida
-            <select value={duration} onChange={(event) => setDuration(event.target.value)} disabled={busy} className="h-11 w-full rounded-xl border bg-background px-3">
+            <select value={duration} onChange={(event) => { setDuration(event.target.value); setStoryboard(null); }} disabled={busy} className="h-11 w-full rounded-xl border bg-background px-3">
               <option value="15">15 segundos</option>
               <option value="30">30 segundos</option>
               <option value="45">45 segundos</option>
