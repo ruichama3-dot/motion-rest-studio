@@ -36,7 +36,7 @@ const ASPECT: Record<VideoFormat, string> = { "16:9": "aspect-video", "9:16": "a
 function Editor() {
   const { id } = Route.useParams();
   const qc = useQueryClient();
-  const { data, error } = useQuery({ queryKey: ["project", id], queryFn: () => getProject(id) });
+  const { data, error, refetch, isFetching } = useQuery({ queryKey: ["project", id], queryFn: () => getProject(id), retry: false });
 
   const [name, setName] = useState("");
   const [hist, setHist] = useState<{ past: Storyboard[]; present: Storyboard | null; future: Storyboard[] }>({ past: [], present: null, future: [] });
@@ -59,7 +59,16 @@ function Editor() {
   const undo = () => setHist((h) => (h.past.length ? { past: h.past.slice(0, -1), present: h.past[h.past.length - 1]!, future: [h.present!, ...h.future] } : h));
   const redo = () => setHist((h) => (h.future.length ? { past: [...h.past, h.present!], present: h.future[0]!, future: h.future.slice(1) } : h));
 
-  if (error) return <p className="p-10 text-destructive">Projeto não encontrado: {error.message}</p>;
+  if (error) return (
+    <section className="mx-auto flex min-h-[65vh] max-w-lg flex-col items-center justify-center px-6 py-12 text-center">
+      <h1 className="text-2xl font-semibold">{error.message === "Projeto indisponível" ? "Projeto indisponível" : "Não foi possível abrir o projeto"}</h1>
+      <p className="mt-3 text-muted-foreground">{error.message === "Projeto indisponível" ? "Este projeto não existe ou não está disponível para a sua conta." : "Os seus projetos não foram alterados. Pode tentar novamente."}</p>
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <Button asChild><Link to="/app"><ArrowLeft /> Voltar aos projetos</Link></Button>
+        {error.message !== "Projeto indisponível" && <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>Tentar novamente</Button>}
+      </div>
+    </section>
+  );
   if (!sb) return <div className="p-10 text-muted-foreground">A carregar projeto…</div>;
 
   const scene = sb.scenes[Math.min(sel, sb.scenes.length - 1)]!;
