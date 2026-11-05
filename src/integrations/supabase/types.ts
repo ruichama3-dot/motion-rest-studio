@@ -58,6 +58,53 @@ export type Database = {
           },
         ]
       }
+      project_assets: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          kind: string
+          mime_type: string
+          name: string
+          path: string
+          project_id: string
+          size_bytes: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          kind: string
+          mime_type: string
+          name: string
+          path: string
+          project_id: string
+          size_bytes: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          kind?: string
+          mime_type?: string
+          name?: string
+          path?: string
+          project_id?: string
+          size_bytes?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_assets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           brief: Json
